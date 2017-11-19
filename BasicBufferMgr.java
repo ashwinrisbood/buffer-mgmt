@@ -166,7 +166,7 @@ class BasicBufferMgr {
     		  	long last= las.get(buff.block());
     		  	long lastaccess = find_last_access(buff.block());
     		  	
-    		  	if(lastaccess<min && !buff.isPinned() && (present - last) > timeout )
+    		  	if(lastaccess<min && !buff.isPinned() && (present - last) < timeout )
     		  	{
     		  		 min = lastaccess;
     		  		 newBuff = buff;
