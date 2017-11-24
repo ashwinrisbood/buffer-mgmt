@@ -20,3 +20,7 @@ lru-k and logging in simpleDB
 ```
 
 ## Testing: 
+### Testing for Part 1 - Buffer Replacement Policy
+
+### Testing for Part 2 - Log Management Policy
+
