@@ -23,6 +23,7 @@ public class Test2 {
 		int numOfBuffers = 8;
 		BufferMgr buffer = new BufferMgr(numOfBuffers);
 		// Test 1
+		System.out.println(" *** Test 1 *** ");
 		System.out.println(buffer.available());
 		System.out.println();
 		
@@ -37,6 +38,7 @@ public class Test2 {
 		Block blk9 = new Block("blk9",9);
 		
 		// Test 2
+		System.out.println(" *** Test 2 *** ");
 		Buffer buf1 = buffer.pin(blk1);
 		System.out.println("Available buffers : " + buffer.available() + "\n");
 		Buffer buf2 = buffer.pin(blk2);
@@ -54,7 +56,11 @@ public class Test2 {
 		Buffer buf8 = buffer.pin(blk8);
 		System.out.println("Available buffers : " + buffer.available() + "\n");
 		
+		//System.out.println(buf8.getInt(0));
+		
+		
 		// Test 3
+		System.out.println(" *** Test 3 *** ");
 		try {
 			// Should throw exception
 			System.out.println("No available buffer, yet attempting to pin a block.");

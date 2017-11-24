@@ -42,6 +42,7 @@ public class Test {
 		buf = buffer.pin(x);
 		buffer.unpin(buf);
 		
+		System.out.println("getString = "+ buf);
 		BasicBufferMgr.print();
 	}
 }
