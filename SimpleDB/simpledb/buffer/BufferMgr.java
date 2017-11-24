@@ -64,8 +64,6 @@ public class BufferMgr {
       }
    }
    
-
-   
    /**
     * Pins a buffer to a new block in the specified file, 
     * potentially waiting until a buffer becomes available.
