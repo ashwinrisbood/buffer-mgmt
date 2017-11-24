@@ -1,4 +1,4 @@
-# buffer-mgmt
+# Systems Project - Buffer & Log Management
 lru-k and logging in simpleDB
 
 ## Unity ID :
