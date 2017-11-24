@@ -8,6 +8,15 @@ lru-k and logging in simpleDB
 + Huy Tu (hqtu)
 + Xi Yang (yxi2)
 
-## List of files Changed :
+## List of files Changed/Created :
+
+```
+├── simpledb\
+|   ├── buffer\ 
+|       ├── Buffer.java
+|       ├── BufferMgr.java
+|       ├── BasicBufferMgr.java
+|       ├── Test.java
+```
 
 ## Testing: 
