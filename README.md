@@ -26,9 +26,9 @@ lru-k and logging in simpleDB
 2. Check the number of available buffers initially. All but one should be available as only
 one of them has been pinned by the logmgr yet.
 3. Keep pinning buffers one by one and check the number of available buffers.
-4. When all buffers have been pinned, if pin request is made again, throw an exception
-6. Unpin a few buffers and see if you are still getting an exception or not.
-7. Try to pin a new buffer again, and check your replacement policy while seeing which
+4. Unpin a few buffers and add more buffers to see if you are still getting an exception or not.
+5. When all buffers have been pinned, if pin request is made again, throw an exception
+6. Try to pin a new buffer again, and check your replacement policy while seeing which
 currently unpinned buffer is replaced.
 
 ### Testing for Part 2 - Log Management Policy

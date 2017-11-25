@@ -14,14 +14,21 @@ import simpledb.file.*;
  * @author Edward Sciore
  *
  */
+/**
+ * changes:-
+* hash map for buffer pool
+* map to store history of refrences
+* timeout value for difference between 2 references to the page
+* @author team Q
+*/
 class BasicBufferMgr {
 	// private Buffer[] bufferpool;   replacing the standard array
-    private static HashMap<Block,Buffer> bufferPoolMap;
-    private HashMap<Block, Long[]> HIST;
-    private HashMap<Block, Long> las;
+    private static HashMap<Block,Buffer> bufferPoolMap;     
+    private HashMap<Block, Long[]> HIST;					
+    private HashMap<Block, Long> las;						
     int bufferpool;
-	private int numAvailable;
-	int timeout = 15;
+	private int numAvailable;								
+	int timeout = 15;										 
    
    
    /**
@@ -37,7 +44,12 @@ class BasicBufferMgr {
     * is called first.
     * @param numbuffs the number of buffer slots to allocate
     */
-   BasicBufferMgr(int numbuffs) {
+	/**
+	 * changes:-
+	* Initialization of all the maps
+	* @author team Q
+	*/
+   BasicBufferMgr(int numbuffs) {						
       bufferpool = numbuffs;
       numAvailable = numbuffs;
       bufferPoolMap = new LinkedHashMap<Block,Buffer>(numbuffs);
@@ -49,7 +61,12 @@ class BasicBufferMgr {
     * Flushes the dirty buffers modified by the specified transaction.
     * @param txnum the transaction's id number
     */
-   synchronized void flushAll(int txnum) {
+   /**
+    * changes:-
+   * changed to flush buffers from map.
+   * @author team Q
+   */
+   synchronized void flushAll(int txnum) {				
 	   for (Entry<Block, Buffer> Entry : bufferPoolMap.entrySet()) {
     	 Buffer buff=Entry.getValue();
     	 if (buff.isModifiedBy(txnum))
@@ -66,12 +83,18 @@ class BasicBufferMgr {
     * @param blk a reference to a disk block
     * @return the pinned buffer
     */
+   /**
+   * changes:-
+   * edited to insert/remove buffers in the hashmap 
+   * @author team Q
+   */
    synchronized Buffer pin(Block blk,long time) {
       Buffer buff = findExistingBuffer(blk);
       if (buff == null) {
          buff = chooseUnpinnedBuffer(time);
          if (buff == null)
             return null;
+         //System.out.println("Buffer used is " + buff.getIndex());
          bufferPoolMap.remove(buff.block());
          buff.assignToBlock(blk);
       }
@@ -114,9 +137,15 @@ class BasicBufferMgr {
     * Returns null (without allocating the block) if 
     * there are no available buffers.
     * @param filename the name of the file
-    * @param fmtr a pageformatter object, used to format the new block
-    * @return the pinned buffer
+    * @param fmtr a page formatter object, used to format the new block
+    * @retur
+    * n the pinned buffer
     */
+   /**
+    * changes:-
+   * chooseunpinnedBuffer just takes a parameter which is the system time
+   * @author team Q
+   */
    synchronized Buffer pinNew(String filename, PageFormatter fmtr) {
       Buffer buff = chooseUnpinnedBuffer(System.currentTimeMillis());
       if (buff == null)
@@ -144,11 +173,19 @@ class BasicBufferMgr {
    int available() {
       return numAvailable;
    }
-   
-   private Buffer findExistingBuffer(Block blk) {			// searching for the block in the buffer
+   /**
+    * changes:-
+   * just a lookup on the bufferpool instead of traversing the bufferpool
+   * @author team Q
+   */
+   private Buffer findExistingBuffer(Block blk) {			
       return bufferPoolMap.get(blk);
    }
-   
+   /**
+    * changes:-
+   * changed to choose unpinned buffer to replace using lru-k
+   * @author team Q
+   */
    private Buffer chooseUnpinnedBuffer(long time) 
    {
       if(bufferPoolMap.size()<bufferpool)
@@ -160,6 +197,7 @@ class BasicBufferMgr {
     	  long present = time;
     	  long min = present;
     	  Buffer newBuff=null;
+    	  int count = 0;
     	  for (Entry<Block, Buffer> Entry : bufferPoolMap.entrySet()) 
     	  {
     		  	Buffer buff=Entry.getValue();
@@ -168,19 +206,30 @@ class BasicBufferMgr {
     		  	
     		  	if(lastaccess<min && !buff.isPinned() && (present - last) < timeout )
     		  	{
-    		  		 min = lastaccess;
-    		  		 newBuff = buff;
+    		  		System.out.println("Buffer's index used is: " + count + ", targeted Block's name is: " + buff.block().fileName());
+    		  		min = lastaccess;
+    		  		newBuff = buff;
     		  	}
+    		  	count += 1;
     		  	
     	  }
     	  return newBuff;
       }      
    }
+   /**
+   * added to find the last access to the block
+   * @author team Q
+   */
    private long find_last_access(Block block)
    {
 	   Long[] history=HIST.get(block);
 	   return history[1];
    }
+   /**
+   * changes:-
+   * added to print blocks in the buffer pool
+   * @author team Q
+   */
    public static void print(){
 	   for(Map.Entry<Block, Buffer> Entry:bufferPoolMap.entrySet())
 	   {

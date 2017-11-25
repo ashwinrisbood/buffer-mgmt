@@ -63,9 +63,6 @@ public class BufferMgr {
          throw new BufferAbortException();
       }
    }
-   
-
-   
    /**
     * Pins a buffer to a new block in the specified file, 
     * potentially waiting until a buffer becomes available.
@@ -74,24 +71,16 @@ public class BufferMgr {
     * @param filename the name of the file
     * @param fmtr the formatter used to initialize the page
     * @return the buffer pinned to that block
+ * @throws InterruptedException 
     */
    public synchronized Buffer pinNew(String filename, PageFormatter fmtr) {
-      try {
          long timestamp = System.currentTimeMillis();
          Buffer buff = bufferMgr.pinNew(filename, fmtr);
          while (buff == null && !waitingTooLong(timestamp)) {
-            wait(MAX_TIME);
-            buff = bufferMgr.pinNew(filename, fmtr);
-         }
-         if (buff == null)
-            throw new BufferAbortException();
-         return buff;
-      }
-      catch(InterruptedException e) {
-         throw new BufferAbortException();
-      }
-   }
-   
+        	 buff = bufferMgr.pinNew(filename, fmtr);
+         	}
+         return buff;   
+      }   
    /**
     * Unpins the specified buffer. 
     * If the buffer's pin count becomes 0,
