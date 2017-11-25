@@ -33,7 +33,7 @@ public class Test2 {
 		Block blk7 = new Block("blk7",7);
 		Block blk8 = new Block("blk8",8);
 		Block blk9 = new Block("blk9",9);
-		Block blk10 = new Block("blk10",10);
+		
 		System.out.println("Created File Blocks.");
 		
 		// Test 2
@@ -60,13 +60,35 @@ public class Test2 {
 		System.out.println("Available buffers : " + buffer.available());
 		Buffer buff = new Buffer();
 		
-		//BufferMgr buffer_copy = buffer;
 		// Test 4
-		Buffer[] newb = new Buffer[2];
-		newb = test4(buffer, buf1, buf2, blk9, blk10);
+		try {
+			// Should throw exception
+			System.out.println("No available buffer, yet attempting to pin a block.");
+			buff = buffer.pin(blk9);
+			System.out.println("Unexpected : Exception Expected.");
+		} catch (simpledb.buffer.BufferAbortException e) {
+			// Expected behavior.
+			System.out.println("****** Buffer Abort Exception thrown - TimedOut ******");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		// Test 5
-	    test5(buffer, blk1);
+		try {
+			System.out.println("Unpinned buffer 7");
+			buffer.unpin(buf7);
+			System.out.println("Unpinned buffer 6");
+			buffer.unpin(buf6);
+			BasicBufferMgr.print();		
+			System.out.println("Available buffers : " + buffer.available());
+			buff = buffer.pin(blk9);
+			System.out.println("Successfully pinned a buffer after unpinning couple of buffers");
+		} catch (simpledb.buffer.BufferAbortException e) {
+			// Unexpected behavior.
+			System.out.println("****** Buffer Abort Exception thrown - TimedOut ******");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 	    System.out.println("Print: ");
 	    BasicBufferMgr.print();	
@@ -76,6 +98,7 @@ public class Test2 {
 		buf4 = buffer.pin(blk4);
 		buf7 = buffer.pin(blk7);
 		
+
 		buffer.unpin(buf8);
 		buffer.unpin(buf7);
 		buffer.unpin(buf6);
