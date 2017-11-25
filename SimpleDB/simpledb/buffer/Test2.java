@@ -67,12 +67,14 @@ public class Test2 {
 		// Test 5
 	    test5(buffer, blk1);
 	    
-		buf4 = buffer.pin(blk4);
-		buf5 = buffer.pin(blk5);
+	    // Test 6
+	    buf4 = buffer.pin(blk4);
+		buf3 = buffer.pin(blk3);
 		buf4 = buffer.pin(blk4);
 		buf7 = buffer.pin(blk7);
-		
-
+		buf5 = buffer.pin(blk5);
+		buffer.unpin(newb[1]);
+		buffer.unpin(newb[0]);
 		buffer.unpin(buf8);
 		buffer.unpin(buf7);
 		buffer.unpin(buf6);
@@ -80,9 +82,10 @@ public class Test2 {
 		buffer.unpin(buf4);
 		buffer.unpin(buf7);
 		buffer.unpin(buf4);
-		buffer.unpin(newb[0]);
-		buffer.unpin(newb[0]);
-		//buffer.unpin(buf);
+		buffer.unpin(buf3);
+		buffer.unpin(buf3);
+		buf1 = buffer.pin(blk1);
+		buf2 = buffer.pin(blk2);
 		
 		BasicBufferMgr.print();
 		System.out.println();
