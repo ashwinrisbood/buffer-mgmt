@@ -94,6 +94,7 @@ class BasicBufferMgr {
          buff = chooseUnpinnedBuffer(time);
          if (buff == null)
             return null;
+         //System.out.println("Buffer used is " + buff.getIndex());
          bufferPoolMap.remove(buff.block());
          buff.assignToBlock(blk);
       }
@@ -196,6 +197,7 @@ class BasicBufferMgr {
     	  long present = time;
     	  long min = present;
     	  Buffer newBuff=null;
+    	  int count = 0;
     	  for (Entry<Block, Buffer> Entry : bufferPoolMap.entrySet()) 
     	  {
     		  	Buffer buff=Entry.getValue();
@@ -204,9 +206,11 @@ class BasicBufferMgr {
     		  	
     		  	if(lastaccess<min && !buff.isPinned() && (present - last) < timeout )
     		  	{
-    		  		 min = lastaccess;
-    		  		 newBuff = buff;
+    		  		System.out.println("Buffer's index used is: " + count + ", targeted Block's name is: " + buff.block().fileName());
+    		  		min = lastaccess;
+    		  		newBuff = buff;
     		  	}
+    		  	count += 1;
     		  	
     	  }
     	  return newBuff;
