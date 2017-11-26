@@ -21,6 +21,7 @@ public class LogMgr implements Iterable<BasicLogRecord> {
     * A value of 0 means that the pointer is the first value in the page.
     */
    public static final int LAST_POS = 0;
+   public static final int LOGBUFFERLENGTH = 4;
 
    private String logfile;
    private Page mypage = new Page();
@@ -96,6 +97,20 @@ public class LogMgr implements Iterable<BasicLogRecord> {
       return currentLSN();
    }
 
+   /**
+   * For part 2 testing, print out the result of log page buffer
+   * @author Team number Q
+   */
+   public void printLogPageBuffer(int buffernum) {
+		
+		System.out.println("Buffer number pinned to the log block:" + buffernum );
+		System.out.println("Contents of buffer " + buffernum + ": ");
+		// place holder
+		System.out.print("[");
+		System.out.print("contents");
+		System.out.print("]");
+   }
+   
    /**
     * Adds the specified value to the page at the position denoted by
     * currentpos.  Then increments currentpos by the size of the value.

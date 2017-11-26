@@ -25,8 +25,8 @@ public class Test2 {
 		SimpleDB.initFileLogAndBufferMgr("test2");
 		int numOfBuffers = 8;
 		BufferMgr buffer = new BufferMgr(numOfBuffers);
-		
 		// Test 1
+		System.out.println(" *** Test 1 *** ");
 		Block blk1 = new Block("blk1",1);
 		Block blk2 = new Block("blk2",2);
 		Block blk3 = new Block("blk3",3);
@@ -41,7 +41,12 @@ public class Test2 {
 		System.out.println("1. Created File Blocks.");
 		
 		// Test 2
+<<<<<<< HEAD
 		System.out.println("2. Check the number of available buffers initially: " + buffer.available());
+=======
+		System.out.println(" *** Test 2 *** ");
+		System.out.println("Check the number of available buffers initially: " + buffer.available());
+>>>>>>> db541c2319f78db879838e7dfb2a3a418e403a5d
 		System.out.println();
 		
 		
@@ -62,6 +67,24 @@ public class Test2 {
 		Buffer buf7 = buffer.pin(blk7);
 		System.out.println("Available buffers : " + buffer.available());
 		Buffer buf8 = buffer.pin(blk8);
+		System.out.println("Available buffers : " + buffer.available() + "\n");
+		
+		//System.out.println(buf8.getInt(0));
+		
+		
+		// Test 3
+		System.out.println(" *** Test 3 *** ");
+		try {
+			// Should throw exception
+			System.out.println("No available buffer, yet attempting to pin a block.");
+			Buffer buff = buffer.pin(blk8);
+			System.out.println("Unexpected : Exception Expected.");
+		} catch (simpledb.buffer.BufferAbortException e) {
+			// Expected behavior.
+			System.out.println("****** Buffer Abort Exception thrown - TimedOut ******");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		System.out.println("Available buffers : " + buffer.available());
 		
 		// Test 4
