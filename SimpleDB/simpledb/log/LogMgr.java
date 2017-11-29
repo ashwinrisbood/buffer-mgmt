@@ -1,9 +1,15 @@
 package simpledb.log;
 
 import simpledb.server.SimpleDB;
+import simpledb.buffer.Buffer;
+import simpledb.buffer.BufferMgr;
 import simpledb.file.*;
 import static simpledb.file.Page.*;
 import java.util.*;
+
+import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
+import java.nio.ByteBuffer;
 
 /**
  * The low-level log manager.
@@ -21,12 +27,19 @@ public class LogMgr implements Iterable<BasicLogRecord> {
     * A value of 0 means that the pointer is the first value in the page.
     */
    public static final int LAST_POS = 0;
-   public static final int LOGBUFFERLENGTH = 4;
+   //public static final int LOGBUFFERLENGTH = 4;
 
    private String logfile;
-   private Page mypage = new Page();
+   //UPDATED HERE
+   //private Page mypage = new Page(); //allocate mypage in memory
+   private BufferMgr mybuffMgr = new BufferMgr(8);
+   //private BufferMgr mybuffMgr = new SimpleDB.bufferMgr(8);
+   private static Buffer mybuf = new Buffer();
    private Block currentblk;
    private int currentpos;
+   
+   //UPDATED HERE
+   private LogFormatter fmtr = new LogFormatter();
 
    /**
     * Creates the manager for the specified log file.
@@ -43,16 +56,29 @@ public class LogMgr implements Iterable<BasicLogRecord> {
     */
    public LogMgr(String logfile) {
       this.logfile = logfile;
-      int logsize = SimpleDB.fileMgr().size(logfile);
+      System.out.println("logfile: " + logfile);
+      int logsize = SimpleDB.fileMgr().size(logfile); // number of blocks in logfile
+      System.out.println("logsize: " + logsize);
       if (logsize == 0)
          appendNewBlock();
       else {
-         currentblk = new Block(logfile, logsize-1);
-         mypage.read(currentblk);
-         currentpos = getLastRecordPosition() + INT_SIZE;
+         currentblk = new Block(logfile, logsize-1); // next log block in reverse order
+         //UPDATED HERE
+         //mypage.read(currentblk); //populates mypage with contents of currentblk
+         System.out.println("currentblk: " + currentblk.toString());
+         //mybuf = mybuffMgr.pin(currentblk);
+         mybuf = mybuffMgr.pinNew(logfile, fmtr);
+         
+         String ts = mybuf.getString(0);
+         System.out.println("Test dummy String: " + ts);
+         
+         currentpos = getLastRecordPosition() + INT_SIZE; // integer value at offset of mypage + INT_SIZE
+         System.out.println("currentpos: " + currentpos);
+         
+         printLogPageBuffer();
       }
    }
-
+   
    /**
     * Ensures that the log records corresponding to the
     * specified LSN has been written to disk.
@@ -60,7 +86,7 @@ public class LogMgr implements Iterable<BasicLogRecord> {
     * @param lsn the LSN of a log record
     */
    public void flush(int lsn) {
-      if (lsn >= currentLSN())
+      if (lsn >= currentLSN()) //earlier log records have larger block number? 
          flush();
    }
 
@@ -87,28 +113,17 @@ public class LogMgr implements Iterable<BasicLogRecord> {
       int recsize = INT_SIZE;  // 4 bytes for the integer that points to the previous log record
       for (Object obj : rec)
          recsize += size(obj);
+      System.out.println("currentpos: " + currentpos);
+      System.out.println("recsize: " + recsize);
+      System.out.println("BLOCK_SIZE: " + BLOCK_SIZE);
       if (currentpos + recsize >= BLOCK_SIZE){ // the log record doesn't fit,
-         flush();        // so move to the next block.
+         //flush();        // so move to the next block.
          appendNewBlock();
       }
       for (Object obj : rec)
          appendVal(obj);
       finalizeRecord();
-      return currentLSN();
-   }
-
-   /**
-   * For part 2 testing, print out the result of log page buffer
-   * @author Team number Q
-   */
-   public void printLogPageBuffer(int buffernum) {
-		
-		System.out.println("Buffer number pinned to the log block:" + buffernum );
-		System.out.println("Contents of buffer " + buffernum + ": ");
-		// place holder
-		System.out.print("[");
-		System.out.print("contents");
-		System.out.print("]");
+      return currentLSN(); //LSN of the most recent log record
    }
    
    /**
@@ -116,12 +131,22 @@ public class LogMgr implements Iterable<BasicLogRecord> {
     * currentpos.  Then increments currentpos by the size of the value.
     * @param val the integer or string to be added to the page
     */
+   
+   //UPDATED HERE
    private void appendVal(Object val) {
-      if (val instanceof String)
-         mypage.setString(currentpos, (String)val);
-      else
-         mypage.setInt(currentpos, (Integer)val);
-      currentpos += size(val);
+	   System.out.println("Value to be set: " + val);
+	   if (val instanceof String) {
+		   //mypage.setString(currentpos, (String)val);
+		   mybuf.setString(currentpos, (String)val, -1, -1);
+		   System.out.println("Setting as String");
+	   }
+	   else {
+		   //mypage.setInt(currentpos, (Integer)val);
+		   mybuf.setInt(currentpos, (Integer)val, -1, -1);
+		   System.out.println("Setting as Int");
+	   }
+	   currentpos += size(val);
+	   System.out.println("currentpos after setting: " + currentpos);
    }
 
    /**
@@ -145,23 +170,31 @@ public class LogMgr implements Iterable<BasicLogRecord> {
     * @return the LSN of the most recent log record
     */
    private int currentLSN() {
-      return currentblk.number();
+	   return currentblk.number();
    }
 
    /**
     * Writes the current page to the log file.
     */
    private void flush() {
-      mypage.write(currentblk);
+	   //UPDATED HERE
+	   //mypage.write(currentblk);
+	   mybuffMgr.flushAll(-1);
    }
 
    /**
     * Clear the current page, and append it to the log file.
     */
    private void appendNewBlock() {
-      setLastRecordPosition(0);
-      currentpos = INT_SIZE;
-      currentblk = mypage.append(logfile);
+	   //UPDATED HERE
+	   //setLastRecordPosition(0);
+	   currentpos = INT_SIZE;
+	   //currentblk = mypage.append(logfile);
+	   if (mybuf != null) {
+		   mybuffMgr.unpin(mybuf);
+	   }
+	   mybuf = mybuffMgr.pinNew(logfile, fmtr);
+	   currentblk = mybuf.block();
    }
 
    /**
@@ -172,16 +205,46 @@ public class LogMgr implements Iterable<BasicLogRecord> {
     * is the offset of the integer for the last log record in the page.
     */
    private void finalizeRecord() {
-      mypage.setInt(currentpos, getLastRecordPosition());
-      setLastRecordPosition(currentpos);
-      currentpos += INT_SIZE;
+	   //UPDATED HERE
+	   //mypage.setInt(currentpos, getLastRecordPosition());
+	   mybuf.setInt(currentpos, getLastRecordPosition(), -1, -1);
+	   setLastRecordPosition(currentpos);
+	   currentpos += INT_SIZE;
+	   System.out.println("Test finalizeRecord: ");
+	   printLogPageBuffer();
    }
 
    private int getLastRecordPosition() {
-      return mypage.getInt(LAST_POS);
+	   //UPDATED HERE
+	   //return mypage.getInt(LAST_POS);
+	   return mybuf.getInt(LAST_POS);
    }
 
    private void setLastRecordPosition(int pos) {
-      mypage.setInt(LAST_POS, pos);
+	   //UPDATED HERE
+	   //mypage.setInt(LAST_POS, pos);
+	   mybuf.setInt(LAST_POS, pos, -1, -1);
    }
+   
+   	/**
+    * For part 2 testing, print out the result of log page buffer
+    * @author Team number Q
+    */
+   	static void printLogPageBuffer(){
+	   
+	      System.out.println("***********************************************************");
+	      System.out.println("  Buffer number pinned to the log block: " + mybuf.getPins());
+	      ByteBuffer byteBuffer = mybuf.getContents();
+	      
+	      System.out.println("  Contents of buffer: ");
+	      readBuffer(byteBuffer);
+	      System.out.println("***********************************************************");
+	   }
+   	
+   	static void readBuffer(ByteBuffer destValue)
+	{
+   		destValue.rewind();
+   		while (destValue.hasRemaining())
+   		     System.out.println(destValue.get());
+    }
 }
