@@ -1,6 +1,9 @@
 package simpledb.log;
 
 import static simpledb.file.Page.*;
+
+import simpledb.buffer.Buffer;
+import simpledb.buffer.BufferMgr;
 import simpledb.file.Page;
 
 /**
@@ -14,9 +17,12 @@ import simpledb.file.Page;
  * are in the log record, and what their types are.
  * @author Edward Sciore
  */
+
 public class BasicLogRecord {
-   private Page pg;
-   private int pos;
+	//UPDATED HERE
+	//private Page pg;
+	private Buffer buf;
+	private int pos;
    
    /**
     * A log record located at the specified position of the specified page.
@@ -25,20 +31,31 @@ public class BasicLogRecord {
     * @param pg the page containing the log record
     * @param pos the position of the log record 
     */
-   public BasicLogRecord(Page pg, int pos) {
-      this.pg = pg;
-      this.pos = pos;
-   }
+	//UPDATED HERE
+	/**
+   	public BasicLogRecord(Page pg, int pos) {
+	   	this.pg = pg;
+	   	this.pos = pos;
+   	}
+	**/
+	
+	public BasicLogRecord(Buffer buf, int pos) {
+		   this.buf = buf;
+		   this.pos = pos;	   
+	}
    
    /**
     * Returns the next value of the current log record, 
     * assuming it is an integer.
     * @return the next value of the current log record
     */
+   
    public int nextInt() {
-      int result = pg.getInt(pos);
-      pos += INT_SIZE;
-      return result;
+	   //UPDATED HERE
+	   //int result = pg.getInt(pos);
+	   int result = buf.getInt(pos);
+	   pos += INT_SIZE;
+	   return result;
    }
    
    /**
@@ -47,8 +64,10 @@ public class BasicLogRecord {
     * @return the next value of the current log record
     */
    public String nextString() {
-      String result = pg.getString(pos);
-      pos += STR_SIZE(result.length());
-      return result;
+	   //UPDATED HERE
+	   //String result = pg.getString(pos);
+	   String result = buf.getString(pos);
+	   pos += STR_SIZE(result.length());
+	   return result;
    }
 }
