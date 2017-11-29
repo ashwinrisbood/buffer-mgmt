@@ -187,4 +187,12 @@ public class Buffer {
       blk = contents.append(filename);
       pins = 0;
    }
+
+   public int getPins() {
+	      return pins;
+   }
+	
+    public ByteBuffer getContents(){
+        return contents.getContents();
+    }
 }
