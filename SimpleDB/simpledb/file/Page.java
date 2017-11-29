@@ -42,7 +42,7 @@ public class Page {
     * to create and test databases having a lot of blocks.
     * A more realistic value would be 4K.
     */
-   public static final int BLOCK_SIZE = 400;
+   public static final int BLOCK_SIZE = 100; // 400
    
    /**
     * The size of an integer in bytes.
@@ -67,6 +67,15 @@ public class Page {
    }
    
    private ByteBuffer contents = ByteBuffer.allocateDirect(BLOCK_SIZE);
+
+   public ByteBuffer getContents() {
+	   //System.out.println("TTTTT************");
+	   //System.out.println("contents: " + contents.get());
+	   //System.out.println("TTTTT************");
+	   //System.out.println("contents: " + contents.get());
+	   return contents;
+   }
+   
    private FileMgr filemgr = SimpleDB.fileMgr();
    
    /**
@@ -156,4 +165,5 @@ public class Page {
       contents.putInt(byteval.length);
       contents.put(byteval);
    }
+
 }
