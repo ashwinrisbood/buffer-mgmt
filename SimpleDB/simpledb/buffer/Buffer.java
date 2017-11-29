@@ -189,7 +189,7 @@ public class Buffer {
    }
 
    public int getPins() {
-	      return pins;
+      return pins;
    }
 	
     public ByteBuffer getContents(){
