@@ -150,7 +150,6 @@ public class LogMgr implements Iterable<BasicLogRecord> {
     */
    //UPDATED HERE
    private void appendVal(Object val) {
-	   System.out.println("Value to be set: " + val);
 	   if (val instanceof String) {
 		   //mypage.setString(currentpos, (String)val);
 		   mybuf.setString(currentpos, (String)val, -1, -1);
