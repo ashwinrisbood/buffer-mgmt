@@ -7,8 +7,6 @@ import simpledb.file.*;
 import static simpledb.file.Page.*;
 import java.util.*;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.charset.Charset;
 import java.nio.ByteBuffer;
 
 /**
@@ -47,6 +45,8 @@ public class LogMgr implements Iterable<BasicLogRecord> {
    private static Buffer mybuf = new Buffer();
    private Block currentblk;
    private int currentpos;
+	
+   private static ByteBuffer byteBuffer = null;
    
    /**
     * Task 2: initializing the logFormatter
@@ -75,26 +75,18 @@ public class LogMgr implements Iterable<BasicLogRecord> {
     */
    public LogMgr(String logfile) {
       this.logfile = logfile;
-      System.out.println("logfile: " + logfile);
       int logsize = SimpleDB.fileMgr().size(logfile); // number of blocks in logfile
-      System.out.println("logsize: " + logsize);
       if (logsize == 0)
          appendNewBlock();
       else {
          currentblk = new Block(logfile, logsize-1); // next log block in reverse order
          //UPDATED HERE
          //mypage.read(currentblk); //populates mypage with contents of currentblk
-         System.out.println("currentblk: " + currentblk.toString());
          //mybuf = mybuffMgr.pin(currentblk);
          mybuf = mybuffMgr.pinNew(logfile, fmtr);
          
          String ts = mybuf.getString(0);
-         System.out.println("Test dummy String: " + ts);
-         
          currentpos = getLastRecordPosition() + INT_SIZE; // integer value at offset of mypage + INT_SIZE
-         System.out.println("currentpos: " + currentpos);
-         
-         printLogPageBuffer();
       }
    }
    
@@ -137,9 +129,6 @@ public class LogMgr implements Iterable<BasicLogRecord> {
       int recsize = INT_SIZE;  // 4 bytes for the integer that points to the previous log record
       for (Object obj : rec)
          recsize += size(obj);
-      System.out.println("currentpos: " + currentpos);
-      System.out.println("recsize: " + recsize);
-      System.out.println("BLOCK_SIZE: " + BLOCK_SIZE);
       if (currentpos + recsize >= BLOCK_SIZE){ // the log record doesn't fit,
          //flush();        // so move to the next block.
          appendNewBlock();
@@ -165,15 +154,12 @@ public class LogMgr implements Iterable<BasicLogRecord> {
 	   if (val instanceof String) {
 		   //mypage.setString(currentpos, (String)val);
 		   mybuf.setString(currentpos, (String)val, -1, -1);
-		   System.out.println("Setting as String");
 	   }
 	   else {
 		   //mypage.setInt(currentpos, (Integer)val);
 		   mybuf.setInt(currentpos, (Integer)val, -1, -1);
-		   System.out.println("Setting as Int");
 	   }
 	   currentpos += size(val);
-	   System.out.println("currentpos after setting: " + currentpos);
    }
 
    /**
@@ -249,7 +235,6 @@ public class LogMgr implements Iterable<BasicLogRecord> {
 	   mybuf.setInt(currentpos, getLastRecordPosition(), -1, -1);
 	   setLastRecordPosition(currentpos);
 	   currentpos += INT_SIZE;
-	   System.out.println("Test finalizeRecord: ");
 	   printLogPageBuffer();
    }
    
@@ -277,18 +262,20 @@ public class LogMgr implements Iterable<BasicLogRecord> {
     * For part 2 testing, print out the result of log page buffer
     * @author Team number Q
     */
-   	static void printLogPageBuffer(){
-	   
+	static void printLogPageBuffer(){
+
 	      System.out.println("***********************************************************");
-	      System.out.println("  Buffer number pinned to the log block: " + mybuf.getPins());
-	      ByteBuffer byteBuffer = mybuf.getContents();
-	      
-	      System.out.println("  Contents of buffer: ");
+	      System.out.println("Log management by Buffer: ");
+	      System.out.println("***********************************************************");
+	      System.out.println("Buffer number pinned to the log block: " + mybuf.getPins());
+	      byteBuffer = mybuf.getContents();
+
+	      System.out.println("Contents of buffer: ");
 	      readBuffer(byteBuffer);
-	      System.out.println("***********************************************************");
+	      System.out.println("***********************************************************\n");
 	   }
    	
-    /**
+     /**
      * Task 2: to print log buffer
      * @author Team number Q
      */
@@ -297,5 +284,13 @@ public class LogMgr implements Iterable<BasicLogRecord> {
    		destValue.rewind();
    		while (destValue.hasRemaining())
    		     System.out.println(destValue.get());
-    }
+    	}
+	
+      /**
+      * Task 2: to return log buffer
+      * @author Team number Q
+      */
+	public ByteBuffer getByteBuffer() {
+   		return byteBuffer;
+   	}
 }
