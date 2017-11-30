@@ -3,6 +3,10 @@ package simpledb.buffer;
 import simpledb.file.Block;
 import simpledb.server.SimpleDB;
 
+/**
+ * added to test Task 1: Buffer Replacement Policy
+ * @author team Q
+ */
 public class TestBufferMgr1 {
 
 	public static void main(String[] args) {
@@ -43,10 +47,6 @@ public class TestBufferMgr1 {
 		buffer.unpin(buf);
 		
 
-		//buf.setInt(4, 4, 4, 4);
-		//System.out.println(buf.getInt(4));
-		//buf.setString(4, "str", 4, 4);
-		//System.out.println(buf.getString(4));
 		BasicBufferMgr.print();
 	}
 }
