@@ -7,7 +7,7 @@ import simpledb.server.SimpleDB;
  * added to test Task 1: Buffer Replacement Policy
  * @author team Q
  */
-public class Test2 {
+public class TestBufferMgr2 {
 
 	/**
 	 * Assuming the size of bufferpool is 8

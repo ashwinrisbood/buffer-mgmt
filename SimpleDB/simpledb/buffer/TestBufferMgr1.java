@@ -3,7 +3,7 @@ package simpledb.buffer;
 import simpledb.file.Block;
 import simpledb.server.SimpleDB;
 
-public class Test {
+public class TestBufferMgr1 {
 
 	public static void main(String[] args) {
 		SimpleDB.initFileLogAndBufferMgr("test1");
