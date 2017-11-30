@@ -21,11 +21,14 @@ lru-k and logging in simpleDB
 |   ├── file\ 
 |       ├── Page.java 
 |   ├── log\ 
-|       ├── BasicLogRecord.java
+|       ├── BasicLogRecord.java (revised)
+|       ├── LogIterator.java (revised)
+|       ├── LogMgr.java (revised)
 |       ├── LogFormatter.java (new)
-|       ├── LogIterator.java
-|       ├── LogMgr.java
 |       ├── TestLogMgr.java (new)
+|       ├── BasicLogRecordOrig.java (orignal)
+|       ├── LogIteratorOrig.java (orignal)
+|       ├── LogMgrOrig.java (orignal)
 ```
 
 ## Testing: 
@@ -41,4 +44,9 @@ one of them has been pinned by the logmgr yet.
 currently unpinned buffer is replaced.
 
 ### Testing for Part 2 - Log Management Policy
-(optional)
+
+1. Create a logMgrPage log manager by original method with a new allocated page; 
+2. Append a string "123" to the page by setString();
+3. Create a logMgrBuffer log manager by revised method with a buffer in bufferpool;
+4. Append a string "123" to the buffer by setString();
+5. Compare the contents in page and buffer, if they are the same, print "** Log management by Page & Buffer got the same results! **"
