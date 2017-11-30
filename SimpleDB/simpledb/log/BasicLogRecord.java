@@ -19,6 +19,10 @@ import simpledb.file.Page;
  */
 
 public class BasicLogRecord {
+    /**
+     * Task 2: use buffer instead of page
+     * @author Team number Q
+     */
 	//UPDATED HERE
 	//private Page pg;
 	private Buffer buf;
@@ -31,6 +35,11 @@ public class BasicLogRecord {
     * @param pg the page containing the log record
     * @param pos the position of the log record 
     */
+	
+    /**
+     * Task 2: use buffer instead of page
+     * @author Team number Q
+     */
 	//UPDATED HERE
 	/**
    	public BasicLogRecord(Page pg, int pos) {
@@ -51,6 +60,10 @@ public class BasicLogRecord {
     */
    
    public int nextInt() {
+	    /**
+	     * Task 2: changed to increase the pos here
+	     * @author Team number Q
+	     */
 	   //UPDATED HERE
 	   //int result = pg.getInt(pos);
 	   int result = buf.getInt(pos);
@@ -64,6 +77,10 @@ public class BasicLogRecord {
     * @return the next value of the current log record
     */
    public String nextString() {
+	    /**
+	     * Task 2: changed to increase the pos here
+	     * @author Team number Q
+	     */
 	   //UPDATED HERE
 	   //String result = pg.getString(pos);
 	   String result = buf.getString(pos);

@@ -21,15 +21,25 @@ import java.nio.ByteBuffer;
  * {@link simpledb.tx.recovery.RecoveryMgr recovery manager}.
  * @author Edward Sciore
  */
+
+/**
+ * Task 2: updated to let LogMgr use buffer pool instead of page for logging
+ * @author Team number Q
+ */
 public class LogMgr implements Iterable<BasicLogRecord> {
    /**
     * The location where the pointer to the last integer in the page is.
     * A value of 0 means that the pointer is the first value in the page.
     */
    public static final int LAST_POS = 0;
+   
    //public static final int LOGBUFFERLENGTH = 4;
 
    private String logfile;
+   /**
+    * Task 2: initializing the log bufferMgr
+    * @author Team number Q
+    */
    //UPDATED HERE
    //private Page mypage = new Page(); //allocate mypage in memory
    private BufferMgr mybuffMgr = new BufferMgr(8);
@@ -38,6 +48,10 @@ public class LogMgr implements Iterable<BasicLogRecord> {
    private Block currentblk;
    private int currentpos;
    
+   /**
+    * Task 2: initializing the logFormatter
+    * @author Team number Q
+    */
    //UPDATED HERE
    private LogFormatter fmtr = new LogFormatter();
 
@@ -53,6 +67,11 @@ public class LogMgr implements Iterable<BasicLogRecord> {
     * {@link simpledb.server.SimpleDB#initFileMgr(String)}
     * is called first.
     * @param logfile the name of the log file
+    */
+   
+   /**
+    * Task 2: update the log manager to use buffer to handle disk writes
+    * @author Team number Q
     */
    public LogMgr(String logfile) {
       this.logfile = logfile;
@@ -109,6 +128,11 @@ public class LogMgr implements Iterable<BasicLogRecord> {
     * @param rec the list of values
     * @return the LSN of the final value
     */
+   
+   /**
+    * Task 2: updated to use append a log to the buffer
+    * @author Team number Q
+    */
    public synchronized int append(Object[] rec) {
       int recsize = INT_SIZE;  // 4 bytes for the integer that points to the previous log record
       for (Object obj : rec)
@@ -131,7 +155,10 @@ public class LogMgr implements Iterable<BasicLogRecord> {
     * currentpos.  Then increments currentpos by the size of the value.
     * @param val the integer or string to be added to the page
     */
-   
+   /**
+    * Task 2: updated to set the log value to the buffer
+    * @author Team number Q
+    */
    //UPDATED HERE
    private void appendVal(Object val) {
 	   System.out.println("Value to be set: " + val);
@@ -176,6 +203,10 @@ public class LogMgr implements Iterable<BasicLogRecord> {
    /**
     * Writes the current page to the log file.
     */
+   /**
+    * Task 2: updated to let buffer manager to manage write to disk
+    * @author Team number Q
+    */
    private void flush() {
 	   //UPDATED HERE
 	   //mypage.write(currentblk);
@@ -184,6 +215,10 @@ public class LogMgr implements Iterable<BasicLogRecord> {
 
    /**
     * Clear the current page, and append it to the log file.
+    */
+   /**
+    * Task 2: updated to use log buffer with pin and unpin
+    * @author Team number Q
     */
    private void appendNewBlock() {
 	   //UPDATED HERE
@@ -204,6 +239,10 @@ public class LogMgr implements Iterable<BasicLogRecord> {
     * The first four bytes of the page contain an integer whose value
     * is the offset of the integer for the last log record in the page.
     */
+   /**
+    * Task 2: updated for the last log and testing
+    * @author Team number Q
+    */
    private void finalizeRecord() {
 	   //UPDATED HERE
 	   //mypage.setInt(currentpos, getLastRecordPosition());
@@ -213,13 +252,21 @@ public class LogMgr implements Iterable<BasicLogRecord> {
 	   System.out.println("Test finalizeRecord: ");
 	   printLogPageBuffer();
    }
-
+   
+   /**
+    * Edited for task 2 to get from log buffer
+    * @author Team number Q
+    */
    private int getLastRecordPosition() {
 	   //UPDATED HERE
 	   //return mypage.getInt(LAST_POS);
 	   return mybuf.getInt(LAST_POS);
    }
-
+   
+  /**
+   * Edited for task 2 to set dummy number on log buffer
+   * @author Team number Q
+   */
    private void setLastRecordPosition(int pos) {
 	   //UPDATED HERE
 	   //mypage.setInt(LAST_POS, pos);
@@ -241,6 +288,10 @@ public class LogMgr implements Iterable<BasicLogRecord> {
 	      System.out.println("***********************************************************");
 	   }
    	
+    /**
+     * Task 2: to print log buffer
+     * @author Team number Q
+     */
    	static void readBuffer(ByteBuffer destValue)
 	{
    		destValue.rewind();

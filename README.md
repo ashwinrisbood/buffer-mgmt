@@ -16,7 +16,16 @@ lru-k and logging in simpleDB
 |       ├── Buffer.java
 |       ├── BufferMgr.java
 |       ├── BasicBufferMgr.java
-|       ├── Test.java
+|       ├── TestBufferMgr1.java (new)
+|       ├── TestBufferMgr2.java (new)
+|   ├── file\ 
+|       ├── Page.java 
+|   ├── log\ 
+|       ├── BasicLogRecord.java
+|       ├── LogFormatter.java (new)
+|       ├── LogIterator.java
+|       ├── LogMgr.java
+|       ├── TestLogMgr.java (new)
 ```
 
 ## Testing: 
@@ -32,4 +41,4 @@ one of them has been pinned by the logmgr yet.
 currently unpinned buffer is replaced.
 
 ### Testing for Part 2 - Log Management Policy
-
+(optional)

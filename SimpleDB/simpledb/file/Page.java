@@ -35,6 +35,11 @@ import java.nio.charset.Charset;
  * </pre>
  * @author Edward Sciore
  */
+
+/**
+ * Task 2: updated to create method to print page for testing reason
+ * @author Team number Q
+ */
 public class Page {
    /**
     * The number of bytes in a block.
@@ -42,7 +47,12 @@ public class Page {
     * to create and test databases having a lot of blocks.
     * A more realistic value would be 4K.
     */
-   public static final int BLOCK_SIZE = 100; // 400
+	
+	/**
+	 * Task 2: change for testing reason
+	 * @author Team number Q
+	 */
+   public static final int BLOCK_SIZE = 100; // was 400
    
    /**
     * The size of an integer in bytes.
@@ -66,8 +76,13 @@ public class Page {
       return INT_SIZE + (n * (int)bytesPerChar);
    }
    
+
    private ByteBuffer contents = ByteBuffer.allocateDirect(BLOCK_SIZE);
 
+   /**
+    * Task 2: added for testing printout
+    * @author Team number Q
+    */
    public ByteBuffer getContents() {
 	   //System.out.println("TTTTT************");
 	   //System.out.println("contents: " + contents.get());

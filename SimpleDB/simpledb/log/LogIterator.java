@@ -15,8 +15,14 @@ import java.util.Iterator;
  * 
  * @author Edward Sciore
  */
+
+
 class LogIterator implements Iterator<BasicLogRecord> {
    private Block blk;
+   /**
+    * Task 2: initializing the bufferMgr
+    * @author Team number Q
+    */
    //UPDATED HERE
    //private Page pg = new Page();
    private BufferMgr bufferMgr = SimpleDB.bufferMgr();
@@ -31,6 +37,10 @@ class LogIterator implements Iterator<BasicLogRecord> {
     */
    LogIterator(Block blk) {
       this.blk = blk;
+      /**
+       * Task 2: use buffer pin instead of page read
+       * @author Team number Q
+       */
       //UPDATED HERE
       //pg.read(blk); //populates mypage with contents of currentblk
       buf = bufferMgr.pin(blk);
@@ -57,6 +67,10 @@ class LogIterator implements Iterator<BasicLogRecord> {
    public BasicLogRecord next() {
       if (currentrec == 0) 
          moveToNextBlock();
+      /**
+       * Task 2: use buffer getInt instead of page
+       * @author Team number Q
+       */
       //UPDATED HERE
       //currentrec = pg.getInt(currentrec);//return the integer at currentrec
       currentrec = buf.getInt(currentrec);
@@ -74,6 +88,10 @@ class LogIterator implements Iterator<BasicLogRecord> {
     */
    private void moveToNextBlock() {
       blk = new Block(blk.fileName(), blk.number()-1);//moves to the next oldest block
+      /**
+       * Task 2: use buffer unpin instead of page read
+       * @author Team number Q
+       */
       //UPDATED HERE
       //pg.read(blk);//populates the page with the contents of blk
       //currentrec = pg.getInt(LogMgr.LAST_POS);//
