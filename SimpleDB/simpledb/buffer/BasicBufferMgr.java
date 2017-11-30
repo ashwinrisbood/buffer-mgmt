@@ -221,6 +221,7 @@ public class BasicBufferMgr {
 	   Long[] history=HIST.get(block);
 	   return history[1];
    }
+	
    /**
    * changes:-
    * added to print blocks in the buffer pool
@@ -233,4 +234,24 @@ public class BasicBufferMgr {
 	   } 
 	      System.out.println();
 	}
+    
+     /**
+    * Determines whether the map has a mapping from
+    * the block to some buffer.
+    * @param blk the block to use as a key
+    * @return true if there is a mapping; false otherwise
+    */
+ 
+    boolean containsMapping(Block blk) {
+ 	   return bufferPoolMap.containsKey(blk);
+    }
+ 
+    /**
+    * Returns the buffer that the map maps the specified block to.
+    * @param blk the block to use as a key
+    * @return the buffer mapped to if there is a mapping; null otherwise
+    */
+    Buffer getMapping(Block blk) {
+ 	   return bufferPoolMap.get(blk);
+    }
 }
