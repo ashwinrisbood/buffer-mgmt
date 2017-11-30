@@ -3,8 +3,6 @@ package simpledb.log;
 import static simpledb.file.Page.*;
 
 import simpledb.buffer.Buffer;
-import simpledb.buffer.BufferMgr;
-import simpledb.file.Page;
 
 /**
  * A class that provides the ability to read the values of
