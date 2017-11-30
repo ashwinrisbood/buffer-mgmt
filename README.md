@@ -45,8 +45,9 @@ currently unpinned buffer is replaced.
 
 ### Testing for Part 2 - Log Management Policy
 
-1. Create a logMgrPage log manager by original method with a new allocated page; 
-2. Append a string "123" to the page by setString();
-3. Create a logMgrBuffer log manager by revised method with a buffer in bufferpool;
-4. Append a string "123" to the buffer by setString();
-5. Compare the contents in page and buffer, if they are the same, print "** Log management by Page & Buffer got the same results! **"
+1. Create a logMgrPage log manager by original method with a new allocated page.
+2. Append a string "123" to the page by setString().
+3. Create a logMgrBuffer log manager by revised method with a buffer in bufferpool.
+4. Append a string "123" to the buffer by setString().
+5. Compare the contents in page and buffer, if they are the same, 
+print "** Log management by Page & Buffer got the same results! **".
