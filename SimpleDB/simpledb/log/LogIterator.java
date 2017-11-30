@@ -1,7 +1,12 @@
 package simpledb.log;
 
 import static simpledb.file.Page.INT_SIZE;
+
+import simpledb.buffer.Buffer;
+import simpledb.buffer.BufferMgr;
 import simpledb.file.*;
+import simpledb.server.SimpleDB;
+
 import java.util.Iterator;
 
 /**
@@ -10,9 +15,18 @@ import java.util.Iterator;
  * 
  * @author Edward Sciore
  */
+
+
 class LogIterator implements Iterator<BasicLogRecord> {
    private Block blk;
-   private Page pg = new Page();
+   /**
+    * Task 2: initializing the bufferMgr
+    * @author Team number Q
+    */
+   //UPDATED HERE
+   //private Page pg = new Page();
+   private BufferMgr bufferMgr = SimpleDB.bufferMgr();
+   private Buffer buf;
    private int currentrec;
    
    /**
@@ -23,8 +37,15 @@ class LogIterator implements Iterator<BasicLogRecord> {
     */
    LogIterator(Block blk) {
       this.blk = blk;
-      pg.read(blk);
-      currentrec = pg.getInt(LogMgr.LAST_POS);
+      /**
+       * Task 2: use buffer pin instead of page read
+       * @author Team number Q
+       */
+      //UPDATED HERE
+      //pg.read(blk); //populates mypage with contents of currentblk
+      buf = bufferMgr.pin(blk);
+      //currentrec = pg.getInt(LogMgr.LAST_POS);
+      currentrec = buf.getInt(LogMgr.LAST_POS);
    }
    
    /**
@@ -46,8 +67,15 @@ class LogIterator implements Iterator<BasicLogRecord> {
    public BasicLogRecord next() {
       if (currentrec == 0) 
          moveToNextBlock();
-      currentrec = pg.getInt(currentrec);
-      return new BasicLogRecord(pg, currentrec+INT_SIZE);
+      /**
+       * Task 2: use buffer getInt instead of page
+       * @author Team number Q
+       */
+      //UPDATED HERE
+      //currentrec = pg.getInt(currentrec);//return the integer at currentrec
+      currentrec = buf.getInt(currentrec);
+      //return new BasicLogRecord(pg, currentrec+INT_SIZE);
+      return new BasicLogRecord(buf, currentrec+INT_SIZE);
    }
    
    public void remove() {
@@ -59,8 +87,16 @@ class LogIterator implements Iterator<BasicLogRecord> {
     * and positions it after the last record in that block.
     */
    private void moveToNextBlock() {
-      blk = new Block(blk.fileName(), blk.number()-1);
-      pg.read(blk);
-      currentrec = pg.getInt(LogMgr.LAST_POS);
+      blk = new Block(blk.fileName(), blk.number()-1);//moves to the next oldest block
+      /**
+       * Task 2: use buffer unpin instead of page read
+       * @author Team number Q
+       */
+      //UPDATED HERE
+      //pg.read(blk);//populates the page with the contents of blk
+      //currentrec = pg.getInt(LogMgr.LAST_POS);//
+      bufferMgr.unpin(buf);
+      buf = bufferMgr.pin(blk);
+      currentrec = buf.getInt(LogMgr.LAST_POS);
    }
 }
