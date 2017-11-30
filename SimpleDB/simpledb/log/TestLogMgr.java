@@ -5,6 +5,10 @@ import java.nio.ByteBuffer;
 
 import simpledb.server.SimpleDB;
 
+/**
+* Task 2: newly created for testing logmgr with buffer
+* @author Team number Q
+**/
 public class TestLogMgr {
 	
 	public static void main(String[] args) {
