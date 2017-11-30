@@ -14,7 +14,7 @@ public class TestLogMgr {
 		SimpleDB.initFileMgr("test2");
 		LogMgr logMgr = new LogMgr("testLog");
 		
-		logMgr.append(new Object[] {"1","2","3"});
+		logMgr.append(new Object[] {"123"});
 		
 	}
 }
