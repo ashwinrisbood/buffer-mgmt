@@ -21,9 +21,9 @@ import simpledb.file.*;
 * timeout value for difference between 2 references to the page
 * @author team Q
 */
-class BasicBufferMgr {
+public class BasicBufferMgr {
 	// private Buffer[] bufferpool;   replacing the standard array
-    private static HashMap<Block,Buffer> bufferPoolMap;     
+    public static HashMap<Block,Buffer> bufferPoolMap;     
     private HashMap<Block, Long[]> HIST;					
     private HashMap<Block, Long> las;						
     int bufferpool;
@@ -94,7 +94,6 @@ class BasicBufferMgr {
          buff = chooseUnpinnedBuffer(time);
          if (buff == null)
             return null;
-         //System.out.println("Buffer used is " + buff.getIndex());
          bufferPoolMap.remove(buff.block());
          buff.assignToBlock(blk);
       }
@@ -108,19 +107,19 @@ class BasicBufferMgr {
       if(las.containsKey(blk))
       {
     	  long past=las.get(blk);
-    	  if(present_time - past > timeout)
+    	  if(present_time - past < timeout)
     	  {
     		  Long[] history = HIST.get(blk);
     		  history[1]=history[0];
     		  history[0]=time;
-    		  HIST.put(blk,  history);
+    		  HIST.replace(blk,  history);
     	  }
       }  
       else
     	  {
     		  Long[] history= new Long[2];
     		  history[0]=time;
-    		  history[1]=(long) -1;
+    		  history[1]=Long.MAX_VALUE;
     		  HIST.put(blk,  history);
     	  }
       		las.put(blk,present_time);
@@ -128,7 +127,7 @@ class BasicBufferMgr {
    }
    
    synchronized Buffer pin(Block blk){
-		return pin(blk,System.currentTimeMillis());
+		return pin(blk, System.currentTimeMillis());
 	}
    
    /**
@@ -195,22 +194,19 @@ class BasicBufferMgr {
       else
       {
     	  long present = time;
-    	  long min = present;
+    	  long max = present;
     	  Buffer newBuff=null;
-    	  int count = 0;
     	  for (Entry<Block, Buffer> Entry : bufferPoolMap.entrySet()) 
     	  {
     		  	Buffer buff=Entry.getValue();
     		  	long last= las.get(buff.block());
     		  	long lastaccess = find_last_access(buff.block());
     		  	
-    		  	if(lastaccess<min && !buff.isPinned() && (present - last) < timeout )
+    		  	if(lastaccess>max && !buff.isPinned() && (present - last) < timeout )
     		  	{
-    		  		System.out.println("Buffer's index used is: " + count + ", targeted Block's name is: " + buff.block().fileName());
-    		  		min = lastaccess;
-    		  		newBuff = buff;
+    		  		 max = lastaccess;
+    		  		 newBuff = buff;
     		  	}
-    		  	count += 1;
     		  	
     	  }
     	  return newBuff;
@@ -237,25 +233,4 @@ class BasicBufferMgr {
 	   } 
 	      System.out.println();
 	}
-   
-   /**
-   * Determines whether the map has a mapping from
-   * the block to some buffer.
-   * @param blk the block to use as a key
-   * @return true if there is a mapping; false otherwise
-   */
-
-   boolean containsMapping(Block blk) {
-	   return bufferPoolMap.containsKey(blk);
-   }
-
-   /**
-   * Returns the buffer that the map maps the specified block to.
-   * @param blk the block to use as a key
-   * @return the buffer mapped to if there is a mapping; null otherwise
-   */
-   Buffer getMapping(Block blk) {
-	   return bufferPoolMap.get(blk);
-   }
-
 }
