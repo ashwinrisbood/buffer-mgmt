@@ -5,6 +5,7 @@ import simpledb.server.SimpleDB;
 
 /**
  * added to test Task 1: Buffer Replacement Policy
+ * more intensive test (case 1-6)
  * @author team Q
  */
 public class TestBufferMgr2 {
@@ -47,6 +48,7 @@ public class TestBufferMgr2 {
 		
 		
 		// Test 3
+		System.out.println(" *** Test 3 *** ");
 		System.out.println("3. Keep pinning buffers one by one and check the number of available buffers.");
 		Buffer buf1 = buffer.pin(blk1);
 		System.out.println("Available buffers : " + buffer.available());
@@ -68,13 +70,16 @@ public class TestBufferMgr2 {
 		//System.out.println(buf8.getInt(0));
 		
 		// Test 4
+		System.out.println(" *** Test 4 *** ");
 		Buffer[] newb = new Buffer[2];
 		newb = test4(buffer, buf1, buf2, blk9, blk10);
 		
 		// Test 5
+		System.out.println(" *** Test 5 *** ");
 	    test5(buffer, blk1);
 	    
 	    // Test 6
+	    System.out.println(" *** Test 6 *** ");
 	    System.out.println("6. Try to pin a new buffer again, and check your replacement policy \r\n" + 
 				"while seeing which currently unpinned buffer is replaced. ");
 	    buf4 = buffer.pin(blk4);
