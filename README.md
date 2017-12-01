@@ -2,11 +2,11 @@
 
 ## Description:
 
-### Task 1: Buffer Management
+#### Task 1: Buffer Management
 1.  Use  a  Map  data  structure  to  keep  track  of  the  buffer  pool
 2.  Modify the buffer replacement policy to the LRU (K=2) - Least Recently Used (K) policy
 
-### Task 2: Log Management
+#### Task 2: Log Management
 Modify SimpleDB to implement the design where the log manager pin a buffer to the last log block, and let the buffer manager handle the disk accesses. 
 
 
