@@ -13,22 +13,19 @@ lru-k and logging in simpleDB
 ```
 ├── simpledb\
 |   ├── buffer\ 
-|       ├── Buffer.java
-|       ├── BufferMgr.java
-|       ├── BasicBufferMgr.java
-|       ├── TestBufferMgr1.java (new)
+|       ├── Buffer.java         (revised)
+|       ├── BufferMgr.java      (revised)
+|       ├── BasicBufferMgr.java (revised)
+|       ├── TestBufferMgr1.java (new)
 |       ├── TestBufferMgr2.java (new)
 |   ├── file\ 
-|       ├── Page.java 
+|       ├── Page.java           (revised)  
 |   ├── log\ 
 |       ├── BasicLogRecord.java (revised)
-|       ├── LogIterator.java (revised)
-|       ├── LogMgr.java (revised)
-|       ├── LogFormatter.java (new)
-|       ├── TestLogMgr.java (new)
-|       ├── BasicLogRecordOrig.java (orignal)
-|       ├── LogIteratorOrig.java (orignal)
-|       ├── LogMgrOrig.java (orignal)
+|       ├── LogIterator.java    (revised)
+|       ├── LogMgr.java         (revised)
+|       ├── LogFormatter.java   (new)
+|       ├── TestLogMgr.java     (new)
 ```
 
 ## Testing: 
