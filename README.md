@@ -41,7 +41,7 @@ Modify SimpleDB to implement the design where the log manager pin a buffer to th
 ```
 
 ## Testing: 
-### Testing for Task 1 - Buffer Replacement Policy
+#### Testing for Task 1 - Buffer Replacement Policy
 
 1. Create a list of files-blocks.
 2. Check the number of available buffers initially. All but one should be available as only
@@ -52,7 +52,7 @@ one of them has been pinned by the logmgr yet.
 6. Try to pin a new buffer again, and check your replacement policy while seeing which
 currently unpinned buffer is replaced.
 
-### Testing for Task 2 - Log Management Policy
+#### Testing for Task 2 - Log Management Policy
 
 1. Create a logMgrPage log manager by original method with a new allocated page.
 2. Append a string "123" to the page by setString().
